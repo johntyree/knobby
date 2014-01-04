@@ -1,0 +1,7 @@
+KERNEL=="event*", \
+ATTRS{idProduct}=="0410", \
+ATTRS{product}=="Griffin PowerMate", \
+SYMLINK+="powermate", \
+GROUP="users", \
+MODE="0660", \
+RUN+="/media/disk/scripts/run_as john /media/disk/scripts/su-notify-send.sh 'Griffin PowerMate' 'Connected at /dev/powermate"
