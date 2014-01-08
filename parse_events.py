@@ -42,7 +42,7 @@ class Event(object):
 def main():
     """Run main."""
     event = struct.Struct(event_fmt)
-    filename = sys.argv[1] if sys.argv[1:] else 'push_button'
+    filename = sys.argv[1] if len(sys.argv) > 1 else 'push_button'
     with open_data(filename) as fin:
         for event in struct_stream(Event, fin):
             print(event)
