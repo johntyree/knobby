@@ -44,8 +44,11 @@ def main():
     """Run main."""
     event = struct.Struct(event_fmt)
     filename = sys.argv[1] if sys.argv[1:] else 'push_button'
+    starttime = None
     with open_data(filename) as fin:
         for event in struct_stream(Event, fin):
+            starttime = starttime or event.time
+            event.time -= starttime
             print(event)
     return 0
 
