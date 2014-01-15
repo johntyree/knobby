@@ -27,16 +27,21 @@ class Event(object):
         self.time = seconds + (microseconds * 1e-6)
         self.b = second
         self.c = thoid
+        self._hex_print = True
 
     def __repr__(self):
         fmt = """Event(time={time}, b={b}, c={c})"""
         return fmt.format(**vars(self))
 
     def __str__(self):
+        if self._hex_print:
+            fmt = as_hex
+        else:
+            fmt = as_binary
         d = []
         d.append(repr(self))
-        d.append(as_hex(self.b))
-        d.append(as_hex(self.c))
+        d.append(fmt(self.b))
+        d.append(fmt(self.c))
         return '{:50} {} {}'.format(*d)
 
 
