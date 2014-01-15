@@ -1,6 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding: utf8
-"""<+Module Description.+>"""
 
 from __future__ import division, print_function
 
@@ -35,12 +34,3 @@ def chunks_of(sz, buf):
         data += bytes(sz - len(data))
         yield data
         data = buf.read(sz)
-
-
-def main():
-    """Run main."""
-
-    return 0
-
-if __name__ == '__main__':
-    main()
