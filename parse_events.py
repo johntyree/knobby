@@ -8,7 +8,8 @@ import os
 import itertools as it
 import struct
 
-from utils import struct_stream, open_data, chunks_of, as_binary
+from utils import (
+    struct_stream, open_data, chunks_of, chunks_of_buf, as_binary)
 
 # struct {
 #   timeval {int, int}

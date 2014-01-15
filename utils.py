@@ -15,7 +15,7 @@ def struct_stream(klass, buf):
     """
     sz = klass.struct.size
     unpack = klass.struct.unpack
-    for chunk in chunks_of(sz, buf):
+    for chunk in chunks_of_buf(sz, buf):
         data = unpack(chunk)
         yield klass(*data)
 
@@ -24,7 +24,23 @@ def open_data(filename):
     return open(os.path.join('events', filename), 'rb')
 
 
-def chunks_of(sz, buf):
+def chunks_of(sz, it):
+    it = iter(it)
+    try:
+        while sz > 0:  # Non-positive sizes are useless
+            ret = []
+            count = sz
+            while count:
+                count -= 1
+                ret.append(next(it))
+            if ret:
+                yield tuple(ret)
+    except StopIteration:
+        if ret:
+            yield tuple(ret)
+
+
+def chunks_of_buf(sz, buf):
     """ For a file like object supporting .read(), return an iterator
     that produces size ``sz`` byte chunks
     """
