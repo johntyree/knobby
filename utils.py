@@ -8,14 +8,14 @@ import os
 import itertools as it
 
 
-def struct_stream(klass, buffer):
-    """ Return an iterator that produces `klass` objects. The `klass`
-    constructor should take a tuple of values as produced by
-    struct.unpack().
+def struct_stream(klass, buf):
+    """ Return an iterator that produces ``klass`` objects. The
+    ``klass`` constructor should take a tuple of values as produced
+    by struct.unpack().
     """
     sz = klass.struct.size
     unpack = klass.struct.unpack
-    for chunk in chunks_of(sz, buffer):
+    for chunk in chunks_of(sz, buf):
         data = unpack(chunk)
         yield klass(*data)
 
@@ -26,7 +26,7 @@ def open_data(filename):
 
 def chunks_of(sz, buf):
     """ For a file like object supporting .read(), return an iterator
-    that produces size `sz` byte chunks
+    that produces size ``sz`` byte chunks
     """
     data = buf.read(sz)
     while data:
