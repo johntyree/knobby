@@ -8,7 +8,7 @@ import os
 import itertools as it
 import struct
 
-from utils import struct_stream, open_data, chunks_of
+from utils import struct_stream, open_data, chunks_of, as_binary
 
 # struct {
 #   timeval {int, int}
@@ -34,9 +34,10 @@ class Event(object):
     def __str__(self):
         d = []
         d.append(repr(self))
-        d.append("{:0>64b}".format(self.b))
-        d.append("{:0>64b}".format(self.c))
-        return '\n\t'.join(d)
+        d.append(as_binary(self.b))
+        d.append(as_binary(self.c))
+        return '{:45} {} {}'.format(*d)
+
 
 
 def main():
