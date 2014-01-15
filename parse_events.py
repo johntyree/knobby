@@ -47,7 +47,14 @@ def main():
     filename = sys.argv[1] if sys.argv[1:] else 'push_button'
     starttime = None
     with open_data(filename) as fin:
-        for event in struct_stream(Event, fin):
+        starts, stops = zip(*list(chunks_of(2, struct_stream(Event, fin))))
+        print("Starts:")
+        for event in starts:
+            starttime = starttime or event.time
+            event.time -= starttime
+            print(event)
+        print("Stops:")
+        for event in stops:
             starttime = starttime or event.time
             event.time -= starttime
             print(event)
