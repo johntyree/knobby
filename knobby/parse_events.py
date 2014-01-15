@@ -9,7 +9,7 @@ import itertools as it
 import struct
 
 from utils import (
-    struct_stream, open_data, chunks_of, chunks_of_buf, as_binary)
+    struct_stream, open_data, chunks_of, chunks_of_buf, as_binary, as_hex)
 
 # struct {
 #   timeval {int, int}
@@ -35,9 +35,9 @@ class Event(object):
     def __str__(self):
         d = []
         d.append(repr(self))
-        d.append(as_binary(self.b))
-        d.append(as_binary(self.c))
-        return '{:45} {} {}'.format(*d)
+        d.append(as_hex(self.b))
+        d.append(as_hex(self.c))
+        return '{:50} {} {}'.format(*d)
 
 
 
