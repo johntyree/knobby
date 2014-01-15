@@ -23,8 +23,8 @@ class Event(object):
     struct = struct.Struct(event_fmt)
 
     def __init__(self, seconds, microseconds, second, thoid):
-        self.time = seconds + microseconds / 1e-6
-        self.b = seconds
+        self.time = seconds + (microseconds * 1e-6)
+        self.b = second
         self.c = thoid
 
     def __repr__(self):
