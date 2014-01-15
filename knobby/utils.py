@@ -52,8 +52,26 @@ def chunks_of_buf(sz, buf):
         data = buf.read(sz)
 
 
+def chunks_of_str(sz, string):
+    return ' '.join(''.join(c) for c in chunks_of(sz, string))
+
+
 def as_binary(long_):
-    return "{:0= 64b}".format(long_)
+    string = "{:0=64b}".format(long_)
+    return chunks_of_str(8, string)
+
+
+def as_hex(long_):
+    string = "{:0=16x}".format(long_)
+    return chunks_of_str(2, string)
+
+
+def intersperse(elem, it):
+    it = iter(it)
+    yield next(it)
+    for i in it:
+        yield elem
+        yield i
 
 
 def diff_binary(a, b):
