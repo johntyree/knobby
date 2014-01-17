@@ -3,14 +3,12 @@
 
 from __future__ import division, print_function
 
-import sys
-import os
 import itertools as it
-import struct
 import optparse
+import sys
 
 from .event import Event
-from .utils import struct_stream, chunks_of, chunks_of_buf
+from .utils import struct_stream, chunks_of
 
 
 def parse_args(argv=sys.argv):
@@ -40,15 +38,17 @@ def process(fin, n=None):
         event.time -= starttime
         print(event)
 
+
 def main():
     """Run main."""
-    opts, _ = parse_args()
+    opts, _ =parse_args()
     if opts.filename != '-':
         with open(opts.filename, 'rb') as fin:
             process(fin, opts.n)
     else:
         process(sys.stdin, opts.n)
     return 0
+
 
 if __name__ == '__main__':
     main()

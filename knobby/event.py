@@ -3,10 +3,7 @@
 
 from __future__ import division, print_function
 
-import sys
-import os
 import struct as st
-import itertools as it
 
 from .utils import as_binary, as_hex
 
