@@ -20,10 +20,6 @@ def struct_stream(klass, buf):
         yield klass(*data)
 
 
-def open_data(filename):
-    return open(os.path.join('events', filename), 'rb')
-
-
 def chunks_of(sz, it):
     it = iter(it)
     try:

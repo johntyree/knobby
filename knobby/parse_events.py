@@ -7,9 +7,10 @@ import sys
 import os
 import itertools as it
 import struct
+import optparse
 
 from utils import (
-    struct_stream, open_data, chunks_of, chunks_of_buf, as_binary, as_hex)
+    struct_stream, chunks_of, chunks_of_buf, as_binary, as_hex)
 
 # struct {
 #   timeval {int, int}
@@ -45,24 +46,41 @@ class Event(object):
         return '{:50} {} {}'.format(*d)
 
 
+def parse_args(argv=sys.argv):
+    o = optparse.OptionParser()
+    o.add_option('-n', '--num-events', dest='n', type=int)
+    o.add_option('-f', '--input-file', default='-', dest='filename',
+                 help="The event file.")
+    opts, args = o.parse_args(argv)
+    # o.file = args[0] if args else 'push_button'
+    return opts, args
+
+
+def process(fin, n=None):
+    starttime = None
+    chunks = chunks_of(2, struct_stream(Event, fin))
+    if n is not None:
+        chunks = it.islice(chunks, n)
+    starts, stops = zip(*tuple(chunks))
+    print("Starts:")
+    for event in starts:
+        starttime = starttime or event.time
+        event.time -= starttime
+        print(event)
+    print("Stops:")
+    for event in stops:
+        starttime = starttime or event.time
+        event.time -= starttime
+        print(event)
 
 def main():
     """Run main."""
-    event = struct.Struct(event_fmt)
-    filename = sys.argv[1] if sys.argv[1:] else 'push_button'
-    starttime = None
-    with open_data(filename) as fin:
-        starts, stops = zip(*list(chunks_of(2, struct_stream(Event, fin))))
-        print("Starts:")
-        for event in starts:
-            starttime = starttime or event.time
-            event.time -= starttime
-            print(event)
-        print("Stops:")
-        for event in stops:
-            starttime = starttime or event.time
-            event.time -= starttime
-            print(event)
+    opts, _ = parse_args()
+    if opts.filename != '-':
+        with open(opts.filename, 'rb') as fin:
+            process(fin, opts.n)
+    else:
+        process(sys.stdin, opts.n)
     return 0
 
 if __name__ == '__main__':
