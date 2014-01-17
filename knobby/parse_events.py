@@ -17,7 +17,7 @@ from utils import (
 #   long
 #   long
 # }
-event_fmt = "@iill"
+event_fmt = "@iiLL"
 
 
 class Event(object):
