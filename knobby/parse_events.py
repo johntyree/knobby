@@ -9,41 +9,8 @@ import itertools as it
 import struct
 import optparse
 
-from utils import (
-    struct_stream, chunks_of, chunks_of_buf, as_binary, as_hex)
-
-# struct {
-#   timeval {int, int}
-#   long
-#   long
-# }
-event_fmt = "@iiLL"
-
-
-class Event(object):
-
-    struct = struct.Struct(event_fmt)
-
-    def __init__(self, seconds, microseconds, second, thoid):
-        self.time = seconds + (microseconds * 1e-6)
-        self.b = second
-        self.c = thoid
-        self._hex_print = True
-
-    def __repr__(self):
-        fmt = """Event(time={time}, b={b}, c={c})"""
-        return fmt.format(**vars(self))
-
-    def __str__(self):
-        if self._hex_print:
-            fmt = as_hex
-        else:
-            fmt = as_binary
-        d = []
-        d.append(repr(self))
-        d.append(fmt(self.b))
-        d.append(fmt(self.c))
-        return '{:50} {} {}'.format(*d)
+from .event import Event
+from .utils import struct_stream, chunks_of, chunks_of_buf
 
 
 def parse_args(argv=sys.argv):
