@@ -20,6 +20,12 @@ class Event(object):
 
     struct = st.Struct(event_fmt)
 
+    BUTTON_DOWN_ON  = 0x00000101000001
+    BUTTON_DOWN_OFF = 0x00000001000001
+
+    BUTTON_UP_ON  = 0x0
+    BUTTON_UP_OFF = 0x0
+
     def __init__(self, seconds, microseconds, second, thoid):
         self.time = seconds + (microseconds * 1e-6)
         self.b = second
