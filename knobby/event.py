@@ -5,7 +5,7 @@ from __future__ import division, print_function
 
 import struct as st
 
-from .utils import as_binary, as_hex
+from .utils import as_binary, as_hex, reverse_dict, clamp
 
 
 # struct {
@@ -15,13 +15,14 @@ from .utils import as_binary, as_hex
 # }
 event_fmt = "@LLIi"
 
+EVENT_BY_NAME = {'button': 0x01000001,
+                 'turn': 0x00070002}
+EVENT_BY_ID = reverse_dict(EVENT_BY_NAME, unique=True)
+
 
 class Event(object):
 
     struct = st.Struct(event_fmt)
-
-    BUTTON = 0x01000001
-    TURN   = 0x00070002
 
     def __init__(self, seconds, microseconds, event_id, data):
         self.seconds = seconds
@@ -29,6 +30,10 @@ class Event(object):
         self.id = event_id
         self.data = data
         self._hex_print = True
+
+    @property
+    def name(self):
+        return EVENT_BY_ID.get(self.id)
 
     @property
     def time(self):
@@ -43,13 +48,25 @@ class Event(object):
         d['time'] = self.time
         return fmt.format(**d)
 
+    def describe(self):
+        ret = []
+        if self.name:
+            ret.append(self.name.title())
+            if self.name == 'button':
+                ret.append(('released', 'pressed')[clamp(self.data, 0, 1)])
+            elif self.name == 'turn':
+                direction = clamp(self.data, 0, 1)
+                ret.append(('counter-clockwise', 'clockwise')[direction])
+                units = abs(self.data)
+                s = 's' if units != 1 else ''
+                ret.append("{} unit{}".format(units, s))
+        return ' '.join(ret)
+
     def __str__(self):
-        if self._hex_print:
-            fmt = as_hex
-        else:
-            fmt = as_binary
+        fmt = as_hex if self._hex_print else as_binary
         d = []
-        d.append(repr(self))
+        d.append("{:60}".format(repr(self)))
         d.append(fmt(self.id))
         d.append(fmt(self.data))
-        return '{:60} {} {}'.format(*d)
+        d.append(self.describe())
+        return ' '.join(d)
