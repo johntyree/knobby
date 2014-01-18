@@ -3,10 +3,6 @@
 
 from __future__ import division, print_function
 
-import sys
-import os
-import itertools as it
-
 
 def struct_stream(klass, buf):
     """ Return an iterator that produces ``klass`` objects. The
