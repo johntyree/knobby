@@ -16,6 +16,7 @@ from .utils import as_binary, as_hex, reverse_dict, clamp
 event_fmt = "@LLIi"
 
 EVENT_BY_NAME = {'button': 0x01000001,
+                 'end': 0x0,
                  'turn': 0x00070002}
 EVENT_BY_ID = reverse_dict(EVENT_BY_NAME, unique=True)
 
