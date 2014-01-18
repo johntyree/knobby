@@ -3,9 +3,11 @@
 
 from __future__ import division, print_function
 
+import itertools as it
 import struct as st
 
-from .utils import as_binary, as_hex, reverse_dict, clamp
+from .utils import (
+    as_binary, as_hex, reverse_dict, clamp, struct_stream, try_repeatedly)
 
 
 # struct {
@@ -76,3 +78,51 @@ class Event(object):
         d.append(fmt(self.data))
         d.append(self.describe())
         return ' '.join(d)
+
+
+class EventHandler(object):
+    """Read and process a stream of events.
+
+    callback : callable
+    callback is called on each event.
+
+    """
+
+    def __init__(self, callback=print, source_filename='/dev/powermate'):
+        """ Initialize the handler and attempt to open the data source.
+        Give up after 5 tries.
+        """
+        self.callback = callback
+        self.fin = source_filename
+
+    def fin():
+        def fget(self):
+            return self._fin
+        def fset(self, value):
+            if value == '-':
+                value = '/dev/stdin'
+            open_file = lambda: open(value, 'rb')
+            self._fin = try_repeatedly(open_file, OSError, 5)
+        def fdel(self):
+            self._fin.close()
+            del self._fin
+        return locals()
+    fin = property(**fin())
+
+    def process(self, n=None):
+        """ Wait for events and process them as they come. Return immediately
+        if the callback returns True.
+
+        n : int
+            Limit processing to `n` events.
+        """
+        if not self.fin:
+            raise ValueError("Source file `Event.fin` not set")
+
+        chunks = struct_stream(Event, self.fin)
+        if n is not None:
+            chunks = it.islice(chunks, n)
+        for event in chunks:
+            ret = self.callback(event)
+            if ret:
+                return ret
