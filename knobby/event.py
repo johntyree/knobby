@@ -9,32 +9,39 @@ from .utils import as_binary, as_hex
 
 
 # struct {
-#   timeval {int, int}
-#   unsigned long
-#   unsigned long
+#   timeval {long sec, long usec}
+#   int id
+#   int data
 # }
-event_fmt = "@iiLL"
+event_fmt = "@LLii"
 
 
 class Event(object):
 
     struct = st.Struct(event_fmt)
 
-    BUTTON_DOWN_ON  = 0x00000101000001
-    BUTTON_DOWN_OFF = 0x00000001000001
+    BUTTON = 0x01000001
+    TURN   = 0x00070002
 
-    BUTTON_UP_ON  = 0x0
-    BUTTON_UP_OFF = 0x0
-
-    def __init__(self, seconds, microseconds, event_id, event_mask):
-        self.time = seconds + (microseconds * 1e-6)
+    def __init__(self, seconds, microseconds, event_id, data):
+        self.seconds = seconds
+        self.microseconds = microseconds
         self.id = event_id
-        self.mask = event_mask
+        self.data = data
         self._hex_print = True
 
+    @property
+    def time(self):
+        return self.seconds + (self.microseconds * 1e-6)
+
     def __repr__(self):
-        fmt = """Event(time={time}, id={id}, mask={mask})"""
-        return fmt.format(**vars(self))
+        fmt = ("Event(sec={seconds}"
+               ", usec={microseconds:06}"
+               ", id={id:08x}"
+               ", data={data:08x})")
+        d = vars(self)
+        d['time'] = self.time
+        return fmt.format(**d)
 
     def __str__(self):
         if self._hex_print:
@@ -44,5 +51,5 @@ class Event(object):
         d = []
         d.append(repr(self))
         d.append(fmt(self.id))
-        d.append(fmt(self.mask))
-        return '{:50} {} {}'.format(*d)
+        d.append(fmt(self.data))
+        return '{:60} {} {}'.format(*d)
