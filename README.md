@@ -35,3 +35,12 @@ Button:
 End:
  * id: `0x0`
  * data: `0x0`
+
+API
+---
+
+To use knobby, write an callback function to handle `knobby.Event`s as they
+stream in. Then instantiate an `EventHandler` with your callback function and
+call `knobby.main.main(handler)`.
+
+A small but functional example is in `knobby/handlers/volume_control.py`.
