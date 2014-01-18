@@ -11,8 +11,8 @@ from __future__ import division, print_function
 
 import subprocess
 
-from .event import EventHandler
-from .main import main
+from ..event import EventHandler
+from ..main import main
 
 
 def volume_callback(event):
