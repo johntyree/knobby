@@ -20,7 +20,7 @@ def parse_args(argv=sys.argv):
     return opts, args
 
 
-def process(fin, n=None, callback=print):
+def process(fin, callback=print, n=None):
     """Read and process a stream of events.
 
     n : int
