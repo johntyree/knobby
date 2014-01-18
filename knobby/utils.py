@@ -3,6 +3,25 @@
 
 from __future__ import division, print_function
 
+import time
+
+
+def try_repeatedly(func, exception, tries=5):
+    """ Try to return func() retrying up to `tries` times if
+    `exception` occurs, otherwise return None. Do not catch other
+    Exceptions.
+    """
+    while tries:
+        try:
+            return func()
+        except exception as e:
+            # Show the error and how many tries are left
+            print("{} ({}/{})".format(e, 5 - tries + 1, 5))
+            tries -= 1
+            if tries:
+                # Give the error time to resolve
+                time.sleep(2)
+
 
 def struct_stream(klass, buf):
     """ Return an iterator that produces ``klass`` objects. The
