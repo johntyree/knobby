@@ -8,7 +8,7 @@ import optparse
 import sys
 
 from .event import Event
-from .utils import struct_stream, chunks_of
+from .utils import struct_stream
 
 
 def parse_args(argv=sys.argv):
@@ -16,35 +16,25 @@ def parse_args(argv=sys.argv):
     o.add_option('-n', '--num-events', dest='n', type=int)
     o.add_option('-f', '--input-file', default='-', dest='filename',
                  help="The event file.")
-    o.add_option('-s', '--split', action='store_true',
-                 help=("Split the output into 'start' and 'stop' events"
-                       " (this disables streaming output)."))
     opts, args = o.parse_args(argv)
-    # o.file = args[0] if args else 'push_button'
     return opts, args
 
 
-def process(fin, n=None, split=False):
-    starttime = None
-    chunks = chunks_of(2, struct_stream(Event, fin))
+def process(fin, n=None, callback=print):
+    """Read and process a stream of events.
+
+    n : int
+        Limit processing to `n` events.
+
+    callback : callable
+        callback is called on each event.
+
+    """
+    chunks = struct_stream(Event, fin)
     if n is not None:
         chunks = it.islice(chunks, n)
-    if split:
-        starts, stops = zip(*tuple(chunks))
-        print("Starts:")
-        for event in starts:
-            starttime = starttime or event.time
-            # event.time -= starttime
-            print(event)
-        print("Stops:")
-        for event in stops:
-            starttime = starttime or event.time
-            # event.time -= starttime
-            print(event)
-    else:
-        for start, stop in chunks:
-            print(start)
-            print(stop)
+    for event in chunks:
+        callback(event)
 
 
 def main():

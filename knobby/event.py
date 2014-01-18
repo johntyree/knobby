@@ -22,6 +22,7 @@ EVENT_BY_ID = reverse_dict(EVENT_BY_NAME, unique=True)
 
 
 class Event(object):
+    """ An Event from the device. """
 
     struct = st.Struct(event_fmt)
 
@@ -34,10 +35,13 @@ class Event(object):
 
     @property
     def name(self):
+        """ Return the name of this event as listed in EVENT_BY_NAME. """
         return EVENT_BY_ID.get(self.id)
 
     @property
     def time(self):
+        """ Return a float of the time since the epoch of the creation
+        of this event. """
         return self.seconds + (self.microseconds * 1e-6)
 
     def __repr__(self):
@@ -50,6 +54,7 @@ class Event(object):
         return fmt.format(**d)
 
     def describe(self):
+        """ Return a pretty description of the Event."""
         ret = []
         if self.name:
             ret.append(self.name.title())
