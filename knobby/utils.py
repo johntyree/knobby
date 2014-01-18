@@ -58,6 +58,10 @@ def reverse_dict(d, unique=False):
     return ret
 
 
+def clamp(val, minimum, maximum):
+    return min(max(minimum, val), maximum)
+
+
 def as_binary(val, sz=32):
     string = "{:0={sz}b}".format(val, sz=sz)
     return chunks_of_str(8, string)
