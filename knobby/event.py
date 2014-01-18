@@ -10,10 +10,10 @@ from .utils import as_binary, as_hex
 
 # struct {
 #   timeval {long sec, long usec}
-#   int id
+#   unsigned int id
 #   int data
 # }
-event_fmt = "@LLii"
+event_fmt = "@LLIi"
 
 
 class Event(object):
@@ -38,7 +38,7 @@ class Event(object):
         fmt = ("Event(sec={seconds}"
                ", usec={microseconds:06}"
                ", id={id:08x}"
-               ", data={data:08x})")
+               ", data={data: 08x})")
         d = vars(self)
         d['time'] = self.time
         return fmt.format(**d)
