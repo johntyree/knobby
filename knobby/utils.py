@@ -48,6 +48,16 @@ def chunks_of_str(sz, string):
     return ' '.join(''.join(c) for c in chunks_of(sz, string))
 
 
+def reverse_dict(d, unique=False):
+    if unique:
+        ret = {v: k for k, v in d.items()}
+    else:
+        ret = {}
+        for k, v in d.items():
+            ret.setdefault(k, []).append(v)
+    return ret
+
+
 def as_binary(val, sz=32):
     string = "{:0={sz}b}".format(val, sz=sz)
     return chunks_of_str(8, string)
