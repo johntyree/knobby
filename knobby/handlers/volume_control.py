@@ -30,6 +30,7 @@ def volume_callback(event):
     return False
 
 
+volume_control_handler = EventHandler(callback=volume_callback)
+
 if __name__ == '__main__':
-    handler = EventHandler(callback=volume_callback)
-    main(handler=handler)
+    main(handler=volume_control_handler)
