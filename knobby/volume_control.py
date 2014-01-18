@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 # coding: utf8
-"""<+Module Description.+>"""
+"""An example script for controlling the system audio with knobby.
+
+Turning the knob left and right increases and decreases the volume. Pressing
+the button toggles mute.
+
+"""
 
 from __future__ import division, print_function
 
 import subprocess
+import time
 
 from .parse_events import process
 
@@ -26,12 +32,21 @@ def volume_callback(event):
 
 def main():
     """Run main."""
-
-    while True:
+    # Give up after a few failures
+    tries = 5
+    while tries:
         try:
             with open('/dev/powermate', 'rb') as fin:
+                # We succeeded, reset our failure count
+                tries = 5
                 process(fin, volume_callback)
-        except OSError:
+        except OSError as e:
+            # Show the error and how many tries are left
+            print("{} ({}/{})".format(e, 5 - tries + 1, 5))
+            tries -= 1
+            if tries:
+                # Give the error time to resolve
+                time.sleep(2)
 
     return 0
 
