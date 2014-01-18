@@ -34,7 +34,9 @@ def process(fin, callback=print, n=None):
     if n is not None:
         chunks = it.islice(chunks, n)
     for event in chunks:
-        callback(event)
+        ret = callback(event)
+        if not ret:
+            return ret
 
 
 def main():
