@@ -20,9 +20,9 @@ some way.
 Events
 ------
 
-The events have one of three identified types and always come in pairs. The
-second event is always `End` and occurs at exactly the same time as the
-original event. The purpose of `End` is not yet known.
+The events have one of three identified types and always come in groups. All
+events in a group occur at the same time. The final event in a group is always
+`end` and signals that no more events will arrive with the current time stamp.
 
 Turn:
  * id: `0x00070002`
