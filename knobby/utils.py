@@ -48,14 +48,14 @@ def chunks_of_str(sz, string):
     return ' '.join(''.join(c) for c in chunks_of(sz, string))
 
 
-def as_binary(long_):
-    string = "{:0=64b}".format(long_)
+def as_binary(val, sz=32):
+    string = "{:0={sz}b}".format(val, sz=sz)
     return chunks_of_str(8, string)
 
 
-def as_hex(long_):
-    string = "{:0=16x}".format(long_)
-    return chunks_of_str(2, string)
+def as_hex(val, sz=32):
+    string = "{:0={sz}x}".format(val, sz=sz//4)
+    return chunks_of_str(4, string)
 
 
 def intersperse(elem, it):
