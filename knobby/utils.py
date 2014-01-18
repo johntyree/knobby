@@ -30,9 +30,12 @@ def struct_stream(klass, buf):
     """
     sz = klass.struct.size
     unpack = klass.struct.unpack
-    for chunk in chunks_of_buf(sz, buf):
-        data = unpack(chunk)
-        yield klass(*data)
+    try:
+        for chunk in chunks_of_buf(sz, buf):
+            data = unpack(chunk)
+            yield klass(*data)
+    except KeyboardInterrupt:
+        return
 
 
 def chunks_of(sz, it):
