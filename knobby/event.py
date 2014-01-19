@@ -3,6 +3,7 @@
 
 from __future__ import division, print_function
 
+import functools as ft
 import itertools as it
 import struct as st
 
@@ -93,7 +94,8 @@ class EventHandler(object):
         Give up after 5 tries.
         """
         self.callback = callback
-        self.fin = source_filename
+        self.source_filename = source_filename
+        self._fin = None
 
     def fin():
         def fget(self):
@@ -101,7 +103,9 @@ class EventHandler(object):
         def fset(self, value):
             if value == '-':
                 value = '/dev/stdin'
-            open_file = lambda: open(value, 'rb')
+            if self.fin:
+                del self.fin
+            open_file = ft.partial(open, value, 'rb')
             self._fin = try_repeatedly(open_file, OSError, 5)
         def fdel(self):
             self._fin.close()
@@ -116,8 +120,10 @@ class EventHandler(object):
         n : int
             Limit processing to `n` events.
         """
-        if not self.fin:
+        if not self.source_filename:
             raise ValueError("Source file `Event.fin` not set")
+
+        self.fin = self.source_filename
 
         chunks = struct_stream(Event, self.fin)
         if n is not None:

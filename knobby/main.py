@@ -3,10 +3,12 @@
 
 from __future__ import division, print_function
 
+import functools as ft
 import optparse
 import sys
 
 from .event import EventHandler
+from .utils import try_repeatedly
 
 
 def parse_args(argv=sys.argv):
@@ -24,7 +26,10 @@ def main(handler=None):
     """Run the given `EventHandler` or a default one if None given."""
     opts, _ = parse_args()
     handler = handler or EventHandler()
-    handler.process()
+    if not opts.n:
+        try_repeatedly(ft.partial(handler.process, n=opts.n), OSError, 5)
+    else:
+        handler.process(n=opts.n)
     return 0
 
 
