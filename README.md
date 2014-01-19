@@ -4,7 +4,21 @@ Knobby
 An experiment in reverse engineering the Griffin PowerMate USB jog
 wheel/button on Linux.
 
+First, install the udev rule to make sure your PowerMate appears at
+`/dev/powermate`. Adjust the `RUN` line to something suitable for your machine
+or remove it altogether if you want no notification of success. If all is done
+correctly, a symlink should appear when the device is plugged in. If it doesn't
+seem to be working, try running `# udevadm control --reload-rules` and
+replugging the device.
+
 A small but fully functional example is in `knobby/handlers/volume_control.py`.
+Test it out with:
+
+```
+python -m knobby.handlers.volume_control
+```
+
+The example assumes that `/dev/powermate` is readable.
 
 Events
 ------
