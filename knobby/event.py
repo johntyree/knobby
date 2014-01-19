@@ -4,12 +4,14 @@
 from __future__ import division, print_function
 
 import functools as ft
+import logging
 import itertools as it
 import struct as st
 
 from .utils import (
     as_binary, as_hex, reverse_dict, clamp, struct_stream, try_repeatedly)
 
+logger = logging.getLogger(__name__)
 
 # struct {
 #   timeval {long sec, long usec}
@@ -129,6 +131,7 @@ class EventHandler(object):
         if n is not None:
             chunks = it.islice(chunks, n)
         for event in chunks:
+            logger.debug(event)
             if verbose:
                 print(event)
             ret = self.callback(event)
