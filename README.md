@@ -4,6 +4,11 @@ Knobby
 An experiment in reverse engineering the Griffin PowerMate USB jog
 wheel/button on Linux.
 
+A small but fully functional example is in `knobby/handlers/volume_control.py`.
+
+Events
+------
+
 Events come in from the device node as a byte stream with each event having the
 form
 
@@ -17,10 +22,7 @@ struct {
 where `id` is unique for each kind of event and data describes the event in
 some way.
 
-Events
-------
-
-The events have one of three identified types and always come in groups. All
+The events have one of three identified ids and always come in groups. All
 events in a group occur at the same time. The final event in a group is always
 `end` and signals that no more events will arrive with the current time stamp.
 
@@ -39,8 +41,18 @@ End:
 API
 ---
 
-To use knobby, write an callback function to handle `knobby.Event`s as they
-stream in. Then instantiate an `EventHandler` with your callback function and
-call `knobby.main.main(handler)`.
+```python
+from knobby.api import EventHandler, main
 
-A small but functional example is in `knobby/handlers/volume_control.py`.
+counter = 0
+
+def my_callback(event):
+    print(event)
+    counter += 1
+    # Stop processing after 4 events
+    return counter == 4
+
+my_handler = EventHandler(callback=my_callback)
+
+if __name__ == '__main__':
+    main(handler=my_handler)
