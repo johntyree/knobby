@@ -113,7 +113,7 @@ class EventHandler(object):
         return locals()
     fin = property(**fin())
 
-    def process(self, n=None):
+    def process(self, n=None, verbose=True):
         """ Wait for events and process them as they come. Return immediately
         if the callback returns True.
 
@@ -129,6 +129,8 @@ class EventHandler(object):
         if n is not None:
             chunks = it.islice(chunks, n)
         for event in chunks:
+            if verbose:
+                print(event)
             ret = self.callback(event)
             if ret:
                 return ret

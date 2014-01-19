@@ -16,7 +16,6 @@ from ..main import main
 
 
 def volume_callback(event):
-    print(event)
     cmd = ['pulseaudio-ctl']
     if event.name == 'button' and event.data == 0:
         cmd.append('mute')

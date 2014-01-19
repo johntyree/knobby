@@ -16,6 +16,8 @@ def parse_args(argv=sys.argv):
     o.add_option('-n', '--num-events', dest='n', type=int)
     o.add_option('-f', '--input-file', default='/dev/powermate',
                  dest='filename', help="The PowerMate character device.")
+    o.add_option('-q', '--quiet', dest='verbose', action="store_false",
+                 default=True, help="Don't print events.")
     opts, args = o.parse_args(argv)
     if opts.filename == '-':
         opts.filename = '/dev/stdin'
@@ -27,9 +29,11 @@ def main(handler=None):
     opts, _ = parse_args()
     handler = handler or EventHandler()
     if not opts.n:
-        try_repeatedly(ft.partial(handler.process, n=opts.n), OSError, 5)
+        try_repeatedly(
+            ft.partial(handler.process, n=opts.n, verbose=opts.verbose),
+            OSError, 5)
     else:
-        handler.process(n=opts.n)
+        handler.process(n=opts.n, verbose=opts.verbose)
     return 0
 
 
