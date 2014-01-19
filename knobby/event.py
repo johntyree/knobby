@@ -4,8 +4,8 @@
 from __future__ import division, print_function
 
 import functools as ft
-import logging
 import itertools as it
+import logging
 import struct as st
 
 from .utils import (
