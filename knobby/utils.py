@@ -16,11 +16,15 @@ def try_repeatedly(func, exception, tries=5):
             return func()
         except exception as e:
             # Show the error and how many tries are left
-            print("{} ({}/{})".format(e, 5 - tries + 1, 5))
+            name = type(e).__qualname__
+            print("{}: {} ({}/{})".format(name, e, 5 - tries + 1, 5))
             tries -= 1
             if tries:
                 # Give the error time to resolve
                 time.sleep(2)
+            else:
+                # Propagate the error up
+                raise
 
 
 def struct_stream(klass, buf):
