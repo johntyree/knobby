@@ -15,17 +15,45 @@ from ..event import EventHandler
 from ..main import main
 
 
+class Skipper(object):
+
+    def __init__(self, do_not_skips):
+        self.counter = 0
+        self.cmd = None
+        self.do_not_skips = do_not_skips
+        self.go = 4
+
+    def run(self, cmd):
+        if cmd in self.do_not_skips:
+            self.counter = 0
+            ret = subprocess.call(cmd)
+            if ret:
+                return ret
+        else:
+            if cmd == self.cmd:
+                self.counter += 1
+            else:
+                self.cmd = cmd
+                self.counter = 1
+            while self.counter >= self.go:
+                self.counter -= self.go
+                ret = subprocess.call(self.cmd)
+                if ret:
+                    return ret
+        return 0
+
+handler = Skipper([['pulseaudio-ctl mute']])
+
+
 def volume_callback(event):
     cmd = ['pulseaudio-ctl']
     if event.name == 'button' and event.data == 0:
         cmd.append('mute')
-        if subprocess.call(cmd):
-            return 1
+        handler.run(cmd)
     elif event.name == 'turn':
         cmd.append(('down', 'up')[event.data > 0])
         for i in range(abs(event.data)):
-            if subprocess.call(cmd):
-                return 1
+            handler.run(cmd)
     return False
 
 
