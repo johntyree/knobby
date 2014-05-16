@@ -94,7 +94,7 @@ def as_binary(val, sz=32):
 
 
 def as_hex(val, sz=32):
-    string = "{:0={sz}x}".format(val, sz=sz//4)
+    string = "{:0={sz}x}".format(val, sz=sz // 4)
     return chunks_of_str(4, string)
 
 
