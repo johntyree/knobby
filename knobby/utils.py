@@ -16,7 +16,7 @@ def try_repeatedly(func, exception, tries=5):
             return func()
         except exception as e:
             # Show the error and how many tries are left
-            name = type(e).__qualname__
+            name = e.__class__.__name__
             print("{}: {} ({}/{})".format(name, e, 5 - tries + 1, 5))
             tries -= 1
             if tries:
