@@ -4,4 +4,4 @@ ATTRS{product}=="Griffin PowerMate", \
 SYMLINK+="powermate", \
 GROUP="users", \
 MODE="0660", \
-RUN+="/home/pi/run_as pi python -m knobby.main"
+RUN+="/home/pi/run_as pi python -m 'knobby.handlers.mpd'"
