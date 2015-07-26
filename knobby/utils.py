@@ -36,6 +36,7 @@ def struct_stream(klass, buf):
     unpack = klass.struct.unpack
     try:
         for chunk in chunks_of_buf(sz, buf):
+            chunk = chunk[:sz]
             data = unpack(chunk)
             yield klass(*data)
     except KeyboardInterrupt:

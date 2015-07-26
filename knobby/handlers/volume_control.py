@@ -42,16 +42,18 @@ class Skipper(object):
                     return ret
         return 0
 
-handler = Skipper([['pulseaudio-ctl mute']])
+
+handler = Skipper(['amixer -c 0 set PCM toggle'.split()])
 
 
 def volume_callback(event):
-    cmd = ['pulseaudio-ctl']
+    cmd = ['amixer', '-c', '0', 'set', 'PCM']
     if event.name == 'button' and event.data == 0:
-        cmd.append('mute')
+        cmd.append('toggle')
+        print(cmd)
         handler.run(cmd)
     elif event.name == 'turn':
-        cmd.append(('down', 'up')[event.data > 0])
+        cmd.append(('5dB-', '5dB+')[event.data > 0])
         for i in range(abs(event.data)):
             handler.run(cmd)
     return False
