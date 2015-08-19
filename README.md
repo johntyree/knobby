@@ -1,4 +1,4 @@
-Knobby
+Knobby ![](https://travis-ci.org/johntyree/knobby.svg)
 ======
 
 An experiment in reverse engineering the Griffin PowerMate USB jog
