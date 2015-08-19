@@ -65,7 +65,9 @@ def chunks_of_buf(sz, buf):
     data = buf.read(sz)
     while data:
         # Pad to chunk size
-        data += bytes(sz - len(data))
+        # bytes() has totally changed meaning between py2 and py3.
+        # Good job everyone.
+        data += b'\x00' * (sz - len(data))
         yield data
         data = buf.read(sz)
 
