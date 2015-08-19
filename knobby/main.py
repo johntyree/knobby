@@ -24,9 +24,10 @@ def parse_args(argv=sys.argv):
     return opts, args
 
 
-def main(handler=None):
+def main(handler=None, argv=None):
     """Run the given `EventHandler` or a default one if None given."""
-    opts, _ = parse_args()
+    argv = sys.argv if argv is None else argv
+    opts, _ = parse_args(argv)
     handler = handler or EventHandler()
     if not opts.n:
         try_repeatedly(

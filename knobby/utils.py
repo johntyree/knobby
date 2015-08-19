@@ -30,7 +30,7 @@ def try_repeatedly(func, exception, tries=5):
 def struct_stream(klass, buf):
     """ Return an iterator that produces ``klass`` objects. The
     ``klass`` constructor should take a tuple of values as produced
-    by struct.unpack().
+    by ``klass.struct.unpack()``.
     """
     sz = klass.struct.size
     unpack = klass.struct.unpack
@@ -99,6 +99,7 @@ def as_hex(val, sz=32):
 
 
 def intersperse(elem, it):
+    """ str.join() for iterators. """
     it = iter(it)
     yield next(it)
     for i in it:
