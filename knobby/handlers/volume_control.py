@@ -14,10 +14,19 @@ import subprocess
 from ..event import EventHandler
 from ..main import main
 
+VOL_UP = ['pulseaudio-ctl', 'up']
+VOL_DOWN = ['pulseaudio-ctl', 'down']
+MUTE = ['pulseaudio-ctl', 'mute']
+
 
 class Skipper(object):
 
+    """ The Skipper lets us swallow repeated events without missing single
+    event occurrences. """
+
     def __init__(self, do_not_skips):
+        """ Event types *not* included in `do_not_skips` will need to be
+        repeated `self.go` times before any action is taken. """
         self.counter = 0
         self.cmd = None
         self.do_not_skips = do_not_skips
@@ -42,16 +51,16 @@ class Skipper(object):
                     return ret
         return 0
 
+# We don't want to have to press mute more than once
 handler = Skipper([['pulseaudio-ctl mute']])
 
 
 def volume_callback(event):
-    cmd = ['pulseaudio-ctl']
+    """ React to a knob event by adjusting the volume. """
     if event.name == 'button' and event.data == 0:
-        cmd.append('mute')
-        handler.run(cmd)
+        handler.run(MUTE)
     elif event.name == 'turn':
-        cmd.append(('down', 'up')[event.data > 0])
+        cmd = VOL_UP if event.data > 0 else VOL_DOWN
         for i in range(abs(event.data)):
             handler.run(cmd)
     return False

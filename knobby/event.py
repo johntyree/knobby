@@ -20,9 +20,13 @@ logger = logging.getLogger(__name__)
 # }
 event_fmt = "@LLIi"
 
-EVENT_BY_NAME = {'button': 0x01000001,
-                 'end': 0x0,
-                 'turn': 0x00070002}
+EVENT_BUTTON = 'button'
+EVENT_END = 'end'
+EVENT_TURN = 'turn'
+
+EVENT_BY_NAME = {EVENT_BUTTON: 0x01000001,
+                 EVENT_END: 0x0,
+                 EVENT_TURN: 0x00070002}
 EVENT_BY_ID = reverse_dict(EVENT_BY_NAME, unique=True)
 
 
@@ -45,7 +49,7 @@ class Event(object):
 
     @property
     def time(self):
-        """ Return a float of the time since the epoch of the creation
+        """ Return a float of the time since-the-epoch of the creation
         of this event. """
         return self.seconds + (self.microseconds * 1e-6)
 
@@ -63,9 +67,9 @@ class Event(object):
         ret = []
         if self.name:
             ret.append(self.name.title())
-            if self.name == 'button':
+            if self.name == EVENT_BUTTON:
                 ret.append(('released', 'pressed')[clamp(self.data, 0, 1)])
-            elif self.name == 'turn':
+            elif self.name == EVENT_TURN:
                 direction = clamp(self.data, 0, 1)
                 ret.append(('counter-clockwise', 'clockwise')[direction])
                 units = abs(self.data)
@@ -102,6 +106,7 @@ class EventHandler(object):
     def fin():
         def fget(self):
             return self._fin
+
         def fset(self, value):
             if value == '-':
                 value = '/dev/stdin'
@@ -109,6 +114,7 @@ class EventHandler(object):
                 del self.fin
             open_file = ft.partial(open, value, 'rb')
             self._fin = try_repeatedly(open_file, OSError, 5)
+
         def fdel(self):
             self._fin.close()
             del self._fin
