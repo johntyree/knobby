@@ -1,62 +1,41 @@
 #!/usr/bin/env python
 # coding: utf8
-""" A fart button. """
+""" A fart button.
+
+Just like the volume handlers, but plays a fart noise instead of muting.
+"""
 
 from __future__ import division, print_function
 
-import subprocess
+from ..event import EventHandler, EVENT_BUTTON, EVENT_TURN
+from ..main import main as root_main
+from .skipper import Skipper
+from volume_callback import VOL_UP, VOL_DOWN
 
-from ..event import EventHandler
-from ..main import main
-
-
-class Skipper(object):
-
-    def __init__(self, do_not_skips):
-        self.counter = 0
-        self.cmd = None
-        self.do_not_skips = do_not_skips
-        self.go = 4
-
-    def run(self, cmd):
-        if cmd in self.do_not_skips:
-            self.counter = 0
-            ret = subprocess.call(cmd)
-            if ret:
-                return ret
-        else:
-            if cmd == self.cmd:
-                self.counter += 1
-            else:
-                self.cmd = cmd
-                self.counter = 1
-            while self.counter >= self.go:
-                self.counter -= self.go
-                ret = subprocess.call(self.cmd)
-                if ret:
-                    return ret
-        return 0
 
 handler = Skipper([['fart']])
 
 
-def callback(event):
-    if event.name == 'button' and event.data == 1:
-        cmd = ['fart']
-        ret = handler.run(cmd)
+def fart_callback(event):
+    """ React to a knob event by adjusting the volume... or farting. """
+    if event.name == EVENT_BUTTON and event.data == 1:
+        # assumes you have a fart command... who doesn't?
+        ret = handler.run(['fart'])
         if ret:
             return ret
-    elif event.name == 'turn':
-        cmd = ['pulseaudio-ctl']
-        cmd.append(('down', 'up')[event.data > 0])
+    elif event.name == EVENT_TURN:
+        cmd = VOL_UP if event.data > 0 else VOL_DOWN
         for i in range(abs(event.data)):
-            ret = handler.run(cmd)
-            if ret:
-                return ret
+            handler.run(cmd)
     return False
 
 
-fart_handler = EventHandler(callback=callback)
+fart_handler = EventHandler(callback=fart_callback)
+
+
+def main():
+    root_main(handler=fart_handler)
+
 
 if __name__ == '__main__':
-    main(handler=fart_handler)
+    main()
