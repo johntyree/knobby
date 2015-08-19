@@ -10,7 +10,7 @@ from __future__ import division, print_function
 from ..event import EventHandler, EVENT_BUTTON, EVENT_TURN
 from ..main import main as root_main
 from .skipper import Skipper
-from volume_callback import VOL_UP, VOL_DOWN
+from volume_control import VOL_UP, VOL_DOWN
 
 
 handler = Skipper([['fart']])
