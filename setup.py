@@ -15,7 +15,7 @@ setup(
     keywords="PowerMate wheel usb",
     long_description=open('README.md').read(),
     entry_points={
-        'console_scripts': ['knobby = knobby.handlers.fart:main'],
+        'console_scripts': ['knobby = knobby.handlers.screenlock:main'],
     },
     classifiers=[
         "Development Status :: 3 - Alpha",
